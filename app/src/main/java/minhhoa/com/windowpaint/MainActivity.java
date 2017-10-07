@@ -8,8 +8,6 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,124 +24,6 @@ public class MainActivity extends AppCompatActivity {
         shape.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         setContentView(R.layout.activity_main);
         ((ViewGroup) findViewById(R.id.lo_main)).addView(shape);
-
-       /* shape.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-                String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-
-                ClipData dragData = new ClipData(v.getTag().toString(), mimeTypes, item);
-                View.DragShadowBuilder myShadow = new View.DragShadowBuilder(shape);
-
-                v.startDrag(dragData, myShadow, shape, 0);
-                return true;
-            }
-        });*/
-
-        shape.setOnDragListener(new View.OnDragListener() {
-            String msg = "";
-
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                switch (event.getAction()) {
-                    case DragEvent.ACTION_DRAG_STARTED:
-                        layoutParams = (ConstraintLayout.LayoutParams) v.getLayoutParams();
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_STARTED");
-                        // Do nothing
-                        break;
-
-                    case DragEvent.ACTION_DRAG_ENTERED:
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_ENTERED");
-                        int x_cord = (int) event.getX();
-                        int y_cord = (int) event.getY();
-                        break;
-
-                    case DragEvent.ACTION_DRAG_EXITED:
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_EXITED");
-                        /*x_cord = (int) event.getX();
-                        y_cord = (int) event.getY();
-                        layoutParams.leftMargin = x_cord;
-                        layoutParams.topMargin = y_cord;
-                        v.setLayoutParams(layoutParams);*/
-
-                        break;
-
-                    case DragEvent.ACTION_DRAG_LOCATION:
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_LOCATION");
-                        x_cord = (int) event.getX();
-                        y_cord = (int) event.getY();
-                        break;
-
-                    case DragEvent.ACTION_DRAG_ENDED:
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_ENDED");
-
-
-                        // Do nothing
-                        break;
-
-                    case DragEvent.ACTION_DROP:
-                        Log.d(msg, "ACTION_DROP event");
-                        shape.x = (int) event.getX();
-                        shape.y = (int) event.getY();
-                        xbefore = shape.x;
-                        ybefore = shape.y;
-                        shape.invalidate();
-                        // Do nothing
-                        return false;
-                    default:
-                        break;
-                }
-                return true;
-            }
-        });
-
-        shape.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        if (shape.ellipse.contains((int) event.getX(), (int) event.getY())) {
-                            shape.x2 = (int) event.getX();
-                            shape.y2 = (int) event.getY();
-                            shape.x = shape.x + shape.x2 - shape.x1;
-                            shape.y = shape.y + shape.y2 - shape.y1;
-                            shape.x1 = shape.x2;
-                            shape.y1 = shape.y2;
-                            shape.invalidate();
-                        }
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        if (shape.ellipse.contains((int) event.getX(), (int) event.getY())) {
-                            shape.boundingRec = null;
-                            shape.selectedShape = shape.ellipse;
-                            shape.x2 = (int) event.getX();
-                            shape.y2 = (int) event.getY();
-                            shape.x = shape.x + shape.x2 - shape.x1;
-                            shape.y = shape.y + shape.y2 - shape.y1;
-                            shape.x1 = shape.x2;
-                            shape.y1 = shape.y2;
-                            shape.invalidate();
-                        }
-                        break;
-                    case MotionEvent.ACTION_DOWN:
-                        //shape.setVisibility(View.INVISIBLE);
-                        if (shape.ellipse.contains((int) event.getX(), (int) event.getY())) {
-                            shape.selectedShape = shape.ellipse;
-                            shape.boundingRec = shape.ellipse;
-                        } else {
-                            shape.boundingRec = null;
-                        }
-                        shape.invalidate();
-                        shape.x1 = (int) event.getX();
-                        shape.y1 = (int) event.getY();
-                        return true;
-                }
-                return true;
-            }
-        });
     }
 
     private class RectangeView extends View {
@@ -160,6 +40,53 @@ public class MainActivity extends AppCompatActivity {
             y = 20;
             w = 300;
             h = 225;
+
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            super.onTouchEvent(event);
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_MOVE:
+                    if (ellipse.contains((int) event.getX(), (int) event.getY())) {
+                        x2 = (int) event.getX();
+                        y2 = (int) event.getY();
+                        x = x + x2 - x1;
+                        y = y + y2 - y1;
+                        x1 = x2;
+                        y1 = y2;
+                        invalidate();
+                    }
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (ellipse.contains((int) event.getX(), (int) event.getY())) {
+                        boundingRec = null;
+                        selectedShape = ellipse;
+                        x2 = (int) event.getX();
+                        y2 = (int) event.getY();
+                        x = x + x2 - x1;
+                        y = y + y2 - y1;
+                        x1 = x2;
+                        y1 = y2;
+                        invalidate();
+                    }
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    //shape.setVisibility(View.INVISIBLE);
+                    if (ellipse.contains((int) event.getX(), (int) event.getY())) {
+                        selectedShape = ellipse;
+                        boundingRec = ellipse;
+                    } else {
+                        boundingRec = null;
+                    }
+                    invalidate();
+                    x1 = (int) event.getX();
+                    y1 = (int) event.getY();
+                    return true;
+            }
+            return true;
 
         }
 
