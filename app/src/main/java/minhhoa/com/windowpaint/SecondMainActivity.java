@@ -68,12 +68,12 @@ public class SecondMainActivity extends AppCompatActivity {
                 selectedShape = ellipse;
                 x = (int) e.getX();
                 y = (int) e.getY();
-                /*x2 = (int) e.getX();
-                y2 = (int) e.getY();
-                x = x + x2 - x1;
-                y = y + y2 - y1;
-                x1 = x2;
-                y1 = y2;
+                /*rawX = (int) e.getX();
+                rawY = (int) e.getY();
+                x = x + rawX - lastX;
+                y = y + rawY - lastY;
+                lastX = rawX;
+                lastY = rawY;
                 */
                 //invalidate();
                 //}
@@ -97,7 +97,7 @@ public class SecondMainActivity extends AppCompatActivity {
                 y1 = (int) e.getY();
 
                 ClipData dragData = ClipData.newPlainText("", "");
-                View.DragShadowBuilder myShadow = new View.DragShadowBuilder(RectangeView.this);
+                DragShadowBuilder myShadow = new DragShadowBuilder(RectangeView.this);
 
                 this.startDrag(dragData, myShadow, RectangeView.this, 0);
                 return true;

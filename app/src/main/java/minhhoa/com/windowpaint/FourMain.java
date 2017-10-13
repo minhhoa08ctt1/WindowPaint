@@ -13,10 +13,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class FourMain extends AppCompatActivity {
     private ConstraintLayout.LayoutParams layoutParams;
     int xbefore = 0;
     int ybefore = 0;
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final RectangeView shape = new RectangeView(MainActivity.this);
+        final RectangeView shape = new RectangeView(FourMain.this);
         shape.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         setContentView(R.layout.activity_main);
         ((ViewGroup) findViewById(R.id.lo_main)).addView(shape);
@@ -33,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (shape.mode == shape.ZOOM) {
                     shape.mode = shape.DRAG;
-                    Toast.makeText(MainActivity.this, "DRAG", Toast.LENGTH_LONG).show();
+                    Toast.makeText(FourMain.this, "DRAG", Toast.LENGTH_LONG).show();
                 } else {
                     shape.mode = shape.ZOOM;
-                    Toast.makeText(MainActivity.this, "ZOOM", Toast.LENGTH_LONG).show();
+                    Toast.makeText(FourMain.this, "ZOOM", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -48,12 +49,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class RectangeView extends View {
+        int loadTime = 1;
         public static final int DRAG = 1;
         public static final int ZOOM = 2;
         public static final int NONE = 3;
         public int mode = ZOOM;
         public int x, y, w, h;
-        int lastX, lastY, rawX, rawY;
+        int x1, y1, x2, y2;
         RectF boundingRec = new RectF();
         public RectF ellipse;
         public RectF selectedShape;
@@ -66,15 +68,6 @@ public class MainActivity extends AppCompatActivity {
         List<RectF> history = new ArrayList<>();
         Canvas canvas;
         boolean callOnDraw = true;
-        int lastImgWidth;
-        int lastImgHeight;
-        int lastImgLeft;
-        int lastImgTop;
-        Point mViewCenter;
-        int xExtra = 300;
-        int yExtra = 225;
-        int newWidth;
-        int newHeight;
 
         public RectangeView(Context context) {
             super(context);
@@ -85,95 +78,68 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        private float getDistance(Point a, Point b) {
-            float v = ((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y));
-            return ((int) (Math.sqrt(v) * 100)) / 100f;
-        }
-
-        private void refreshImageCenter() {
-            int x = (int) (ellipse.left + ellipse.width() / 2);
-            int y = (int) (ellipse.right + ellipse.height() / 2);
-            mViewCenter = new Point(x, y);
-        }
-
         @Override
         public boolean onTouchEvent(MotionEvent event) {
             super.onTouchEvent(event);
             switch (event.getAction()) {
                 case MotionEvent.ACTION_MOVE:
                     if (ellipse.contains((int) event.getX(), (int) event.getY()) && mode == ZOOM) {
-                        rawX = (int) event.getX();
-                        rawY = (int) event.getY();
-                        //moveX = rawX - pushPoint.x;
-                        //moveY = rawY - pushPoint.y;
-                        if (lastX != -1) {
-                            if (Math.abs(rawX - lastX) < 5 && Math.abs(rawY - lastY) < 5) {
-                                callOnDraw = false;
-                                return false;
-                            } else {
-                                callOnDraw = true;
-                            }
+                        x2 = (int) event.getX();
+                        y2 = (int) event.getY();
+                        moveX = x2 - pushPoint.x;
+                        moveY = y2 - pushPoint.y;
+                        if (moveX > 0 && moveY > 0) {
+                            moveX = moveX+beforeMoveX;
+                            moveY = moveY+beforeMoveY;
+                            callOnDraw = true;
+                            invalidate();
+                        } else if (moveX <= 0 && moveY <= 0) {
+                            moveX = beforeMoveX+moveX;
+                            moveY = beforeMoveY+moveY;
+                            callOnDraw = false;
+                            invalidate();
                         }
-
-                        Point O = mViewCenter, A = pushPoint, B = new Point(rawX, rawY);
-                        float dOA = getDistance(O, A);
-                        float dOB = getDistance(O, B);
-                        float f = dOB / dOA;
-
-                        int newWidth = (int) (lastImgWidth * f);
-                        int newHeight = (int) (lastImgHeight * f);
-
-                        //x = lastImgLeft - ((newWidth - lastImgWidth) / 2);
-                        //y = lastImgTop - ((newHeight - lastImgHeight) / 2);
-
-                        xExtra = newWidth;
-                        yExtra = newHeight;
-
-                        lastX = rawX;
-                        lastY = rawY;
-                        invalidate();
-                    }
-                    if (ellipse.contains((int) event.getX(), (int) event.getY()) && mode == DRAG) {
-                        callOnDraw = true;
-                        rawX = (int) event.getX();
-                        rawY = (int) event.getY();
-                        //moveX = rawX - pushPoint.x;
-                        //moveY = rawY - pushPoint.y;
-                        if (lastX != -1) {
-                            if (Math.abs(rawX - lastX) < 5 && Math.abs(rawY - lastY) < 5) {
-                                callOnDraw = false;
-                                return false;
-                            } else {
-                                callOnDraw = true;
-                            }
-                        }
-                        Point O = mViewCenter, A = pushPoint, B = new Point(rawX, rawY);
-                        float dOA = getDistance(O, A);
-                        float dOB = getDistance(O, B);
-                        float f = dOB / dOA;
-
-                        int newWidth = (int) (lastImgWidth * f);
-                        int newHeight = (int) (lastImgHeight * f);
-
-                        x = lastImgLeft - ((newWidth - lastImgWidth) / 2);
-                        y = lastImgTop - ((newHeight - lastImgHeight) / 2);
-
-                        //x = x + rawX - lastX;
-                        //y = y + rawY - lastY;
-                        //xExtra = x + (int) ellipse.width();
-                        //yExtra = y + (int) ellipse.height();
-                        xExtra = newWidth;
-                        yExtra = newHeight;
-                        lastX = rawX;
-                        lastY = rawY;
+                    } else if (ellipse.contains((int) event.getX(), (int) event.getY()) && mode == DRAG) {
+                        x2 = (int) event.getX();
+                        y2 = (int) event.getY();
+                        x = x + x2 - x1;
+                        y = y + y2 - y1;
+                        x1 = x2;
+                        y1 = y2;
                         invalidate();
                     }
                     break;
                 case MotionEvent.ACTION_CANCEL:
                     break;
                 case MotionEvent.ACTION_UP:
+                    if (ellipse.contains((int) event.getX(), (int) event.getY()) && mode == ZOOM) {
+                        x2 = (int) event.getX();
+                        y2 = (int) event.getY();
+                        moveX = x2 - pushPoint.x;
+                        moveY = y2 - pushPoint.y;
+                        if (moveX > 0 && moveY > 0) {
+                            beforeMoveX = moveX+beforeMoveX;
+                            beforeMoveY = moveY+beforeMoveY;
+                            callOnDraw = true;
+                            invalidate();
+                        } else if (moveX <= 0 && moveY <= 0) {
+                            moveX = beforeMoveX+moveX;
+                            moveY = beforeMoveY+moveY;
+                            callOnDraw = false;
+                            invalidate();
+                        }
+                    } else if (ellipse.contains((int) event.getX(), (int) event.getY()) && mode == DRAG) {
+                        x2 = (int) event.getX();
+                        y2 = (int) event.getY();
+                        x = x + x2 - x1;
+                        y = y + y2 - y1;
+                        x1 = x2;
+                        y1 = y2;
+                        invalidate();
+                    }
                     break;
                 case MotionEvent.ACTION_DOWN:
+                    loadTime++;
                     if (ellipse.contains((int) event.getX(), (int) event.getY())) {
                         selectedShape = ellipse;
                         boundingRec = ellipse;
@@ -181,16 +147,11 @@ public class MainActivity extends AppCompatActivity {
                         selectedShape = null;
                         boundingRec = null;
                     }
-                    lastX = (int) event.getX();
-                    lastY = (int) event.getY();
-                    pushPoint = new Point(lastX, lastY);
-                    //if (mode == ZOOM) {
-                    lastImgWidth = (int) ellipse.width();
-                    lastImgHeight = (int) ellipse.height();
-                    lastImgLeft = (int) ellipse.left;
-                    lastImgTop = (int) ellipse.top;
-                    //}
-                    refreshImageCenter();
+                    x1 = (int) event.getX();
+                    y1 = (int) event.getY();
+                    if (mode == ZOOM) {
+                        pushPoint = new Point(x1, y1);
+                    }
             }
             return true;
 
@@ -202,13 +163,21 @@ public class MainActivity extends AppCompatActivity {
             this.canvas = canvas;
             //this.canvas = canvas;
             Paint paint = new Paint();
-
+            int xExtra = 0;
+            int yExtra = 0;
+            //if (mode == ZOOM) {
+            xExtra = x + moveX;
+            yExtra = y + moveY;
+            //} else {
+            //xExtra = x;
+            //yExtra = y;
+            //}
             if (callOnDraw == true) {
                 ellipse = new RectF(
                         x, // Left
                         y, // Top
-                        xExtra, // Right
-                        yExtra// Bottom
+                        w + xExtra, // Right
+                        h + yExtra// Bottom
                 );
             }
             canvas.drawOval(ellipse, paint);
