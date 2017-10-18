@@ -13,6 +13,7 @@
         android:orientation="horizontal">
 
         <RelativeLayout
+            android:id="@+id/rl_black"
             android:layout_width="20dp"
             android:layout_height="match_parent"
             android:background="#000000"></RelativeLayout>

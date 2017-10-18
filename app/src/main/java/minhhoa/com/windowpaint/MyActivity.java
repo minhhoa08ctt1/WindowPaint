@@ -28,5 +28,11 @@ public class MyActivity extends Activity {
                 ((CommonShape) ((SingleFingerView) findViewById(R.id.tiv)).getmView()).setHexColor("#ffff00");
             }
         });
+        findViewById(R.id.rl_black).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((CommonShape) ((SingleFingerView) findViewById(R.id.tiv)).getmView()).setHexColor("#000000");
+            }
+        });
     }
 }
