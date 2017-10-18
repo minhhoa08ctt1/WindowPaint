@@ -23,17 +23,6 @@ import java.util.List;
  */
 
 public class CommonShape extends ImageView {
-    int x;
-    int y;
-    int w;
-    int h;
-    public RectF ellipse;
-    private boolean isSelected;
-    private String hexColor = "#80000000";
-    private Mode mode = Mode.DRAW;
-    private Drawer drawer = Drawer.ELLIPSE;
-    private boolean isDown = false;
-
     // Enumeration for Mode
     public enum Mode {
         DRAW,
@@ -53,31 +42,57 @@ public class CommonShape extends ImageView {
         CLOUD;
     }
 
+    int x;
+    int y;
+    int w;
+    int h;
+    public RectF ellipse;
+    private boolean isSelected;
+    private String hexColor = "#80000000";
+    private Paint paint;
+
+
     private Context context = null;
+    private Canvas canvas = null;
+    private Bitmap bitmap = null;
+
     private List<Path> pathLists = new ArrayList<Path>();
     private List<Paint> paintLists = new ArrayList<Paint>();
+
+    // for Eraser
+    private int baseColor = Color.TRANSPARENT; //Color.WHITE;
+
     // for Undo, Redo
     private int historyPointer = 0;
-    private Paint textPaint = new Paint();
+
+    // Flags
+    private Mode mode = Mode.DRAW;
+    private Drawer drawer = Drawer.PEN;
+    private boolean isDown = false;
+
+    // for Paint
     private Paint.Style paintStyle = Paint.Style.STROKE;
-    private float paintStrokeWidth = 3F;
     private int paintStrokeColor = Color.BLACK;
+    private int paintFillColor = Color.BLACK;
+    private float paintStrokeWidth = 3F;
+    private int opacity = 255;
+    private float blur = 0F;
     private Paint.Cap lineCap = Paint.Cap.ROUND;
+
+    // for Text
+    private String text = "";
     private Typeface fontFamily = Typeface.DEFAULT;
     private float fontSize = 32F;
     private Paint.Align textAlign = Paint.Align.RIGHT;  // fixed
-    private int opacity = 255;
-    private float blur = 0F;
+    private Paint textPaint = new Paint();
+    private float textX = 0F;
+    private float textY = 0F;
+
     // for Drawer
     private float startX = 0F;
     private float startY = 0F;
     private float controlX = 0F;
     private float controlY = 0F;
-    // for Eraser
-    private int baseColor = Color.TRANSPARENT; //Color.WHITE;
-    private Bitmap bitmap = null;
-    private Canvas canvas;
-
     /**
      * This method creates the instance of Paint.
      * In addition, this method sets styles for Paint.
@@ -455,8 +470,6 @@ public class CommonShape extends ImageView {
             canvas.drawText(substring, textX, y, this.textPaint);
         }
     }
-
-    Paint paint;
 
     public void setSolidColor() {
         paint = new Paint();
