@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 public class SingleFingerView extends LinearLayout {
     private CommonShape mView;
     private ImageView mPushView;
+    private boolean isSelected;
     private float _1dp;
     private boolean mCenterInParent = true;
     private Drawable mImageDrawable, mPushImageDrawable;
@@ -43,10 +44,23 @@ public class SingleFingerView extends LinearLayout {
         View mRoot = View.inflate(context, R.layout.test_image_view, null);
         addView(mRoot, -1, -1);
         mPushView = (ImageView) mRoot.findViewById(R.id.push_view);
-        mView =  mRoot.findViewById(R.id.view);
+        mView = mRoot.findViewById(R.id.view);
         mPushView.setOnTouchListener(new PushBtnTouchListener(mView));
         mView.setOnTouchListener(new ViewOnTouchListener(mPushView));
         initForSingleFingerView();
+        mPushView.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (isSelected == true) {
+                    mPushView.setVisibility(VISIBLE);
+                    isSelected = false;
+                } else {
+                    mPushView.setVisibility(GONE);
+                    isSelected = true;
+                }
+                return true;
+            }
+        });
     }
 
 
@@ -154,4 +168,5 @@ public class SingleFingerView extends LinearLayout {
             setViewToAttr(width, height);
         }
     }
+
 }

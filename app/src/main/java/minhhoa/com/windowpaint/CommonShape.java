@@ -93,6 +93,7 @@ public class CommonShape extends ImageView {
     private float startY = 0F;
     private float controlX = 0F;
     private float controlY = 0F;
+
     /**
      * This method creates the instance of Paint.
      * In addition, this method sets styles for Paint.
@@ -503,7 +504,22 @@ public class CommonShape extends ImageView {
         if (this.bitmap != null) {
             canvas.drawBitmap(this.bitmap, 0F, 0F, new Paint());
         }
-
+        drawer = drawer.ELLIPSE;
+        switch (drawer) {
+            case CIRCLE:
+                path.reset();
+                path.addCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - 150, Path.Direction.CCW);
+                break;
+            case ELLIPSE:
+                path.reset();
+                ellipse = new RectF(
+                        x, // Left
+                        y, // Top
+                        getWidth() - 20, // Right
+                        getHeight() - 20// Bottom
+                );
+                path.addOval(ellipse, Path.Direction.CCW);
+        }
         //for (int i = 0; i < this.historyPointer; i++) {
         Paint paint = this.createPaint();
         canvas.drawPath(path, paint);

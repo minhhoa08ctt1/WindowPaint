@@ -21,6 +21,7 @@ class ViewOnTouchListener implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
+        this.mPushView.setVisibility(View.VISIBLE);
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 if (null == viewLP) {

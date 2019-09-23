@@ -1,0 +1,11 @@
+<minhhoa.com.windowpaint.SingleFingerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pushtouch="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    pushtouch:centerInParent="true"
+    pushtouch:image_height="150dp"
+    pushtouch:image_width="200dp"
+    pushtouch:push_image="@drawable/push_btn"
+    pushtouch:push_image_height="50dp"
+    pushtouch:push_image_width="50dp" />
+
