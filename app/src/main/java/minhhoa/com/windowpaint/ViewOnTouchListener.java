@@ -13,10 +13,10 @@ class ViewOnTouchListener implements View.OnTouchListener {
     int lastPushBtnLeft;
     int lastPushBtnTop;
     private View mPushView;
-
-    ViewOnTouchListener(View mPushView) {
+    private View mView;
+    ViewOnTouchListener(View mPushView,View mView) {
         this.mPushView = mPushView;
-
+        this.mView=mView;
     }
 
     @Override

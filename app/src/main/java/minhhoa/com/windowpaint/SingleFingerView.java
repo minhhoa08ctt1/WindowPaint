@@ -45,8 +45,14 @@ public class SingleFingerView extends LinearLayout {
         addView(mRoot, -1, -1);
         mPushView = (ImageView) mRoot.findViewById(R.id.push_view);
         mView = mRoot.findViewById(R.id.view);
+        mImageWidth=500;
+        mImageHeight=350;
+        mView.getLayoutParams().width= (int) mImageWidth;
+        mView.getLayoutParams().height= (int) mImageHeight;
+        //mView.setDrawer(CommonShape.Drawer.CLOUD);
+        //mView.setMode(CommonShape.Mode.DRAW);
         mPushView.setOnTouchListener(new PushBtnTouchListener(mView));
-        mView.setOnTouchListener(new ViewOnTouchListener(mPushView));
+        mView.setOnTouchListener(new ViewOnTouchListener(mPushView,mView));
         initForSingleFingerView();
         mPushView.setOnLongClickListener(new OnLongClickListener() {
             @Override

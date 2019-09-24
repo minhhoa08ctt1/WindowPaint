@@ -1,5 +1,6 @@
 package minhhoa.com.windowpaint;
 
+import android.content.res.Resources;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -65,6 +66,7 @@ class PushBtnTouchListener implements View.OnTouchListener {
             case MotionEvent.ACTION_POINTER_UP:
                 break;
             case MotionEvent.ACTION_MOVE:
+
                 float rawX = event.getRawX();
                 float rawY = event.getRawY();
                 if (lastX != -1) {
@@ -74,7 +76,6 @@ class PushBtnTouchListener implements View.OnTouchListener {
                 }
                 lastX = rawX;
                 lastY = rawY;
-
                 Point O = mViewCenter, A = pushPoint, B = getPushPoint(pushBtnLP, event);
                 float dOA = getDistance(O, A);
                 float dOB = getDistance(O, B);

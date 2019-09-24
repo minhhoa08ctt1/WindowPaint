@@ -22,7 +22,7 @@ import java.util.List;
  * Created by DELL on 10/11/2017.
  */
 
-public class CommonShape extends ImageView {
+public class CommonShape extends android.support.v7.widget.AppCompatImageView {
     // Enumeration for Mode
     public enum Mode {
         DRAW,
@@ -65,11 +65,12 @@ public class CommonShape extends ImageView {
     // for Undo, Redo
     private int historyPointer = 0;
 
+
+
     // Flags
     private Mode mode = Mode.DRAW;
     private Drawer drawer = Drawer.PEN;
     private boolean isDown = false;
-
     // for Paint
     private Paint.Style paintStyle = Paint.Style.STROKE;
     private int paintStrokeColor = Color.BLACK;
@@ -94,6 +95,13 @@ public class CommonShape extends ImageView {
     private float controlX = 0F;
     private float controlY = 0F;
 
+    public void setDrawer(Drawer drawer) {
+        this.drawer = drawer;
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
+    }
     /**
      * This method creates the instance of Paint.
      * In addition, this method sets styles for Paint.
@@ -325,7 +333,6 @@ public class CommonShape extends ImageView {
                             break;
                         case CLOUD:
                             int dividend = 1;
-                            path = this.getCurrentPath();
                             path.cubicTo((startX - 40) / dividend, (startY + 20) / dividend, (startX - 40) / dividend, (startY + 70) / dividend, (startX + 60) / dividend, (startY + 70) / dividend);
                             path.cubicTo((startX + 80) / dividend, (startY + 100) / dividend, (startX + 150) / dividend, (startY + 100) / dividend, (startX + 170) / dividend, (startY + 70) / dividend);
                             path.cubicTo((startX + 250) / dividend, (startY + 70) / dividend, (startX + 250) / dividend, (startY + 40) / dividend, (startX + 220) / dividend, (startY + 20) / dividend);
@@ -477,6 +484,39 @@ public class CommonShape extends ImageView {
         paint.setColor(Color.parseColor(hexColor));
     }
 
+    public Path DrawCloud(Path t,int x, int y, int w, int h, int color) {
+        t.reset();
+        Matrix m = new Matrix();
+        Paint p = new Paint();
+        p.setColor(color);
+        p.setAntiAlias(true);
+        // original size of path
+        float ow = 400f;
+        float oh = 400f;
+        float od = (w / ow < h / oh) ? w / ow : h / oh;
+        m.reset();
+        m.setScale(od, od, w / ow, h / oh);
+        t.reset();
+        t.moveTo(x, y);
+        t.moveTo(230.4f, 389.57f);
+        t.cubicTo(194.87f, 389.57f, 160.53f, 375.34f, 135.23f, 350.32f);
+        t.cubicTo(126.79f, 353.95f, 117.63f, 355.87f, 108.39f, 355.87f);
+        t.cubicTo(71.04f, 355.87f, 40.66f, 325.48f, 40.66f, 288.12f);
+        t.cubicTo(40.66f, 284.13f, 41.04f, 280.08f, 41.79f, 276.03f);
+        t.cubicTo(15.52f, 256.6f, 0.0f, 226.05f, 0.0f, 193.21f);
+        t.cubicTo(0.0f, 141.56f, 38.98f, 97.72f, 89.71f, 91.12f);
+        t.cubicTo(102.41f, 57.89f, 134.06f, 35.92f, 170.07f, 35.92f);
+        t.cubicTo(201.51f, 35.92f, 230.25f, 53.09f, 245.33f, 80.28f);
+        t.cubicTo(256.19f, 76.53f, 267.51f, 74.62f, 279.11f, 74.62f);
+        t.cubicTo(336.25f, 74.62f, 382.74f, 121.1f, 382.74f, 178.24f);
+        t.cubicTo(382.74f, 180.64f, 382.63f, 183.08f, 382.42f, 185.66f);
+        t.cubicTo(408.09f, 195.71f, 425.49f, 220.71f, 425.49f, 248.69f);
+        t.cubicTo(425.49f, 288.36f, 390.96f, 320.14f, 350.76f, 316.07f);
+        t.cubicTo(327.63f, 360.91f, 281.04f, 389.57f, 230.4f, 389.57f);
+        t.transform(m);
+        return t;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -504,8 +544,11 @@ public class CommonShape extends ImageView {
         if (this.bitmap != null) {
             canvas.drawBitmap(this.bitmap, 0F, 0F, new Paint());
         }
-        drawer = drawer.ELLIPSE;
         switch (drawer) {
+            case RECTANGLE:
+                path.reset();
+                path.addRect(x,y,getWidth(),getHeight(), Path.Direction.CCW);
+                break;
             case CIRCLE:
                 path.reset();
                 path.addCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - 150, Path.Direction.CCW);
@@ -519,6 +562,10 @@ public class CommonShape extends ImageView {
                         getHeight() - 20// Bottom
                 );
                 path.addOval(ellipse, Path.Direction.CCW);
+                break;
+            case CLOUD:
+                DrawCloud(path,x,y,getWidth() - 20,getHeight() - 20,Color.BLACK);;
+                break;
         }
         //for (int i = 0; i < this.historyPointer; i++) {
         Paint paint = this.createPaint();

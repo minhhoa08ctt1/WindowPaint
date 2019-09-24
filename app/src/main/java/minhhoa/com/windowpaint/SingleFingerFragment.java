@@ -18,6 +18,11 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class SingleFingerFragment extends android.app.Fragment {
+    public SingleFingerView getIView() {
+        return IView;
+    }
+
+    private SingleFingerView IView;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -64,7 +69,8 @@ public class SingleFingerFragment extends android.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_single_finger, container, false);
+        IView= (SingleFingerView) inflater.inflate(R.layout.fragment_single_finger, container, false);
+        return IView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
