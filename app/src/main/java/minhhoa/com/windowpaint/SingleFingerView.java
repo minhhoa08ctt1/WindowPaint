@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class SingleFingerView extends LinearLayout {
+    private ImageView IIvEraser;
     private CommonShape mView;
     private ImageView mPushView;
     private boolean isSelected;
@@ -21,6 +23,14 @@ public class SingleFingerView extends LinearLayout {
     private float mImageHeight, mImageWidth, mPushImageHeight, mPushImageWidth;
     private int mLeft = 0, mTop = 0;
 
+
+    public ImageView getIIvEraser() {
+        return IIvEraser;
+    }
+
+    public void setIIvEraser(ImageView IIvEraser) {
+        this.IIvEraser = IIvEraser;
+    }
     public CommonShape getmView() {
         return mView;
     }
@@ -37,22 +47,29 @@ public class SingleFingerView extends LinearLayout {
         this(context, attrs, 0);
     }
 
+
+
     public SingleFingerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mPushImageHeight=50;
+        mPushImageWidth=50;
+
         this._1dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, context.getResources().getDisplayMetrics());
         this.parseAttr(context, attrs);
         View mRoot = View.inflate(context, R.layout.test_image_view, null);
         addView(mRoot, -1, -1);
         mPushView = (ImageView) mRoot.findViewById(R.id.push_view);
+        mPushView.setImageResource(R.drawable.push_btn);
         mView = mRoot.findViewById(R.id.view);
+        IIvEraser=mRoot.findViewById(R.id.UIvEraser);
+        IIvEraser.setOnTouchListener(new EraserTouchListener());
+
         mImageWidth=500;
         mImageHeight=350;
         mView.getLayoutParams().width= (int) mImageWidth;
         mView.getLayoutParams().height= (int) mImageHeight;
-        //mView.setDrawer(CommonShape.Drawer.CLOUD);
-        //mView.setMode(CommonShape.Mode.DRAW);
         mPushView.setOnTouchListener(new PushBtnTouchListener(mView));
-        mView.setOnTouchListener(new ViewOnTouchListener(mPushView,mView));
+        mView.setOnTouchListener(new ViewOnTouchListener(mView,mPushView,((MyActivity)context).getIIvEraser()));
         initForSingleFingerView();
         mPushView.setOnLongClickListener(new OnLongClickListener() {
             @Override
@@ -174,5 +191,4 @@ public class SingleFingerView extends LinearLayout {
             setViewToAttr(width, height);
         }
     }
-
 }

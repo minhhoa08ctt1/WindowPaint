@@ -3,7 +3,6 @@ package minhhoa.com.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,18 +13,21 @@ import java.util.List;
 
 import minhhoa.com.model.ShapeAddingModel;
 import minhhoa.com.windowpaint.CommonShape;
+import minhhoa.com.windowpaint.EraserTouchListener;
 import minhhoa.com.windowpaint.MyActivity;
 import minhhoa.com.windowpaint.R;
 import minhhoa.com.windowpaint.SingleFingerView;
 
+import static minhhoa.com.windowpaint.CommonShape.Mode.DRAW;
+
 public class ShapeAddingSpinnerAdapter extends ArrayAdapter<minhhoa.com.model.ShapeAddingModel> implements   AdapterView.OnItemSelectedListener  {
     List<minhhoa.com.model.ShapeAddingModel> IMyData;
     MyActivity IMyApp;
+    EraserTouchListener listenerComposite;
     public ShapeAddingSpinnerAdapter(@NonNull Context context,List<minhhoa.com.model.ShapeAddingModel> data) {
         super(context,0,data);
         IMyData=data;
         IMyApp= (MyActivity) context;
-
     }
 
     @NonNull
@@ -49,18 +51,22 @@ public class ShapeAddingSpinnerAdapter extends ArrayAdapter<minhhoa.com.model.Sh
         ShapeAddingModel item = (ShapeAddingModel) parent.getItemAtPosition(position);
         if(item.text.equals("Add cloud shape"))
         {
-            SingleFingerView shape= (SingleFingerView)IMyApp.getLayoutInflater().inflate(R.layout.fragment_single_finger, null);
-            shape.getmView().setMode(CommonShape.Mode.DRAW);
-            shape.getmView().setDrawer(CommonShape.Drawer.CLOUD);
-            shape.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
-            IMyApp.getIFlMain().addView(shape);
+            //SingleFingerView shape= (SingleFingerView)IMyApp.getLayoutInflater().inflate(R.layout.fragment_single_finger, null);
+            final SingleFingerView shapeView=new SingleFingerView(IMyApp);
+            shapeView.getmView().setMode(DRAW);
+            shapeView.getmView().setDrawer(CommonShape.Drawer.CLOUD);
+            shapeView.setIIvEraser(IMyApp.getIIvEraser());
+            shapeView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
+            IMyApp.getIFlMain().addView(shapeView);
+
         }
         else
         if(item.text.equals("Add rectangle shape"))
         {
             SingleFingerView shape= (SingleFingerView)IMyApp.getLayoutInflater().inflate(R.layout.fragment_single_finger, null);
-            shape.getmView().setMode(CommonShape.Mode.DRAW);
+            shape.getmView().setMode(DRAW);
             shape.getmView().setDrawer(CommonShape.Drawer.RECTANGLE);
+            shape.setIIvEraser(IMyApp.getIIvEraser());
             shape.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
             IMyApp.getIFlMain().addView(shape);
         }

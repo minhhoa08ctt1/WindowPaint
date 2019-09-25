@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
@@ -14,11 +15,17 @@ import minhhoa.com.adapter.ShapeAddingSpinnerAdapter;
 import minhhoa.com.model.ShapeAddingModel;
 
 public class MyActivity extends Activity {
-    RelativeLayout IRlAddShape;
     RelativeLayout IRlYellow;
     RelativeLayout IRlBlack;
     FrameLayout IFlMain;
     Spinner ISnShape;
+    ImageView IIvEraserIcon;
+    ImageView IIvEraser;
+
+    public ImageView getIIvEraser() {
+        return IIvEraser;
+    }
+
     public FrameLayout getIFlMain() {
         return IFlMain;
     }
@@ -33,10 +40,11 @@ public class MyActivity extends Activity {
     private void InIt()
     {
         IFlMain= findViewById(R.id.fl_main);
-        IRlAddShape=findViewById(R.id.rl_add_shape);
+        IIvEraserIcon=(ImageView) findViewById(R.id.uiv_eraser_icon);
         IRlYellow=findViewById(R.id.rl_yellow);
         IRlBlack=findViewById(R.id.rl_black);
         ISnShape=findViewById(R.id.ushape_spinner);
+        IIvEraser=findViewById(R.id.uiv_eraser);
     }
     private void InItISnShape()
     {
@@ -68,10 +76,11 @@ public class MyActivity extends Activity {
                 //((CommonShape) ((SingleFingerView) findViewById(R.id.tiv)).getmView()).setHexColor("#000000");
             }
         });
-        IRlAddShape.setOnClickListener(new View.OnClickListener() {
+        IIvEraserIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               getFragmentManager().beginTransaction().add(findViewById(R.id.fl_main).getId(),new SingleFingerFragment()).commit();
+                    IIvEraser.setVisibility(View.VISIBLE);
+                    IIvEraser.setOnTouchListener(new EraserTouchListener());
             }
         });
     }

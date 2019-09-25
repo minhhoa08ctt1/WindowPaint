@@ -13,6 +13,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.List;
  * Created by DELL on 10/11/2017.
  */
 
-public class CommonShape extends android.support.v7.widget.AppCompatImageView {
+public class CommonShape extends FrameLayout {
     // Enumeration for Mode
     public enum Mode {
         DRAW,
@@ -53,7 +54,7 @@ public class CommonShape extends android.support.v7.widget.AppCompatImageView {
 
 
     private Context context = null;
-    private Canvas canvas = null;
+    public Canvas canvas = null;
     private Bitmap bitmap = null;
 
     private List<Path> pathLists = new ArrayList<Path>();
@@ -95,6 +96,7 @@ public class CommonShape extends android.support.v7.widget.AppCompatImageView {
     private float controlX = 0F;
     private float controlY = 0F;
 
+    ImageView IIvEraser;
     public void setDrawer(Drawer drawer) {
         this.drawer = drawer;
     }
@@ -108,7 +110,7 @@ public class CommonShape extends android.support.v7.widget.AppCompatImageView {
      *
      * @return paint This is returned as the instance of Paint
      */
-    private Paint createPaint() {
+    public Paint createPaint() {
         Paint paint = new Paint();
 
         paint.setAntiAlias(true);
@@ -207,7 +209,7 @@ public class CommonShape extends android.support.v7.widget.AppCompatImageView {
      *
      * @return the instance of Path
      */
-    private Path getCurrentPath() {
+    public Path getCurrentPath() {
         return this.pathLists.get(this.historyPointer - 1);
     }
 
@@ -224,7 +226,7 @@ public class CommonShape extends android.support.v7.widget.AppCompatImageView {
                 this.onActionDown(event);
                 break;
             case MotionEvent.ACTION_MOVE:
-                //this.onActionMove(event);
+                this.onActionMove(event);
                 break;
             case MotionEvent.ACTION_UP:
                 this.onActionUp(event);
@@ -283,7 +285,6 @@ public class CommonShape extends android.support.v7.widget.AppCompatImageView {
                 break;
         }
     }
-
     /**
      * This method defines processes on MotionEvent.ACTION_MOVE
      *
@@ -414,6 +415,7 @@ public class CommonShape extends android.support.v7.widget.AppCompatImageView {
         y = 20;
         w = 300;
         h = 225;
+
     }
 
     public CommonShape(Context context, AttributeSet attrs) {

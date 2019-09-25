@@ -3,6 +3,7 @@ package minhhoa.com.windowpaint;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 class ViewOnTouchListener implements View.OnTouchListener {
     Point pushPoint;
@@ -13,10 +14,13 @@ class ViewOnTouchListener implements View.OnTouchListener {
     int lastPushBtnLeft;
     int lastPushBtnTop;
     private View mPushView;
-    private View mView;
-    ViewOnTouchListener(View mPushView,View mView) {
+    private ImageView IIvEraser;
+    private CommonShape IvCommonShape;
+    ViewOnTouchListener(View mCommonShape, View mPushView,ImageView mView) {
         this.mPushView = mPushView;
-        this.mView=mView;
+        this.IIvEraser=mView;
+        this.IvCommonShape= (CommonShape) mCommonShape;
+
     }
 
     @Override

@@ -15,8 +15,16 @@
         android:background="@android:color/transparent"
         android:clickable="true"
         android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:focusableInTouchMode="true"
+
+        />
     />
+    <ImageView
+        android:id="@+id/UIvEraser"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/tool_ic_eraser"
+        />
     <ImageView
             android:id="@+id/push_view"
             android:layout_width="50dp"
@@ -29,4 +37,5 @@
             android:layout_marginLeft="0dp"
             android:focusableInTouchMode="true"
             />
+
 </FrameLayout>
